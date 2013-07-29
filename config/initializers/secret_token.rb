@@ -9,4 +9,21 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-TwitterAppRails4::Application.config.secret_key_base = 'aeb80c0a260e935da37afe9afe2957ac7921d86b8d5a708f3a88e423517404d1398b3fd9d6680dbf66b9e321b426ba2c35127893957f344607cd11d5c20a9eaa'
+# TwitterAppRails4::Application.config.secret_key_base = 'aeb80c0a260e935da37afe9afe2957ac7921d86b8d5a708f3a88e423517404d1398b3fd9d6680dbf66b9e321b426ba2c35127893957f344607cd11d5c20a9eaa'
+
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+
+TwitterAppRails4::Application.config.secret_key_base = secure_token
